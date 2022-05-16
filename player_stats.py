@@ -22,9 +22,13 @@ def get_player_data (soup):
     span_tag_csr = soup.find_all('span', {'class' : 'halo-highlighted-stat__value'})
     # Delete the CSR characters from the string, delete comma and convert CSR string value to int.
     player_csr_string = span_tag_csr[0].text
-    player_csr = int(player_csr_string[:-3].replace(",", ""))
-    print("CSR: ", player_csr)
-    player_data['CSR'] = player_csr
+    print(player_csr_string)
+    if player_csr_string == "Unrated ":
+        player_data['CSR'] = player_csr_string
+    else:
+        player_csr = int(player_csr_string[:-3].replace(",", ""))
+        print("CSR: ", player_csr)
+        player_data['CSR'] = player_csr
 
     # Find the div tag that has all the main stats from the player in Solo/Duo Controller.
     div_tag_giant_stats = soup.find_all('div', {'class' : 'numbers'})
@@ -94,7 +98,7 @@ def check_if_player_exist(player_profile):
     # Find the span tag that has the error code when searching for a player's name.
     span_tag_error = soup.find_all('span', {'class' : 'lead'})
     # Keep asking the user to input the correct player name.
-    while span_tag_error[0].text == 'Player Not Found':
+    while span_tag_error[0].text == 'Player Not Found' or span_tag_error[0].text == 'This profile has no data.':
         print('Player was not found. Please enter the correct player name. If you would like to exit type exit().')
         player_profile = input("What player would you like to check stats for: ")
         
@@ -105,5 +109,5 @@ def check_if_player_exist(player_profile):
         page = requests.get(url)
         soup = BeautifulSoup(page.text, 'html.parser')   
         span_tag_error = soup.find_all('span', {'class' : 'lead'})
-
+        
     return soup

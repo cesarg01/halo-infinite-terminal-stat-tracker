@@ -37,10 +37,13 @@ print(player_profile)
 # For each player check if the player exists and get their stats.
 for player in player_profile:
     soup = check_if_player_exist(player)
-    player_data[player] = get_player_data(soup)
+    # Search for the player name to have the dict show the correct player name when a incorrect player name is searched for. 
+    span_tag_player_name = soup.find_all('span', {'class' : 'trn-ign__username'})
+    player_name = span_tag_player_name[0].text
+    player_data[player_name] = get_player_data(soup)
 
-print(player_data['fractalfear'])
-print(player_data['thyhumanoid'])
+#print(player_data['FracTalFeaR'])
+#print(player_data['thyHumanoid'])
 '''
 url = "https://halotracker.com/halo-infinite/profile/xbl/{}/overview?experience=ranked&playlist=f7f30787-f607-436b-bdec-44c65bc2ecef".format(player_profile)
 page = requests.get(url)
@@ -64,7 +67,7 @@ while span_tag_error[0].text == 'Player Not Found':
 # Get the data from the player the user inputted. 
 player_data = get_player_data(soup, player_data)
 '''
-print(type(player_data))
+print('player_data data type is', type(player_data))
 column_headers = []
 # Get all the keys that will make the column header for pandas.
 for key, values in player_data.items():
